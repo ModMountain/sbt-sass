@@ -2,7 +2,7 @@ sbtPlugin := true
 
 name := "sbt-sass"
 
-version := "0.1.9"
+version := "0.2.0"
 
 scalaVersion := "2.10.4"
 
