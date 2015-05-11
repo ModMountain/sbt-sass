@@ -14,11 +14,11 @@ object SassCompiler {
       val parentPath = sassFile.getParentFile.getAbsolutePath
 
       runCompiler(
-        sassCommand ++ Seq("-l", "-I", parentPath) ++ options ++ Seq(Seq(sassFile.getAbsolutePath,  ":",   outfile.getAbsolutePath).mkString)
+        sassCommand ++ Seq("-l", "--sourcemap", "-I", parentPath) ++ options ++ Seq(sassFile.getAbsolutePath, outfile.getAbsolutePath)
       )
 
       runCompiler(
-        sassCommand ++ Seq("-t", "compressed", "-I", parentPath) ++ options ++ Seq(Seq(sassFile.getAbsolutePath,  ":",   outfileMin.getAbsolutePath).mkString)
+        sassCommand ++ Seq("-t", "compressed", "--sourcemap", "-I", parentPath) ++ options ++ Seq(sassFile.getAbsolutePath, outfileMin.getAbsolutePath)
       )
 
       // searching for imported dependencies
