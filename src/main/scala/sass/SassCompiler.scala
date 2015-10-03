@@ -1,10 +1,7 @@
 package sass
 
-//import play.PlayExceptions.AssetCompilationException
-
 import java.io.File
 import scala.sys.process._
-import scala.Some
 import scala.io.Source
 
 object SassCompiler {
@@ -25,10 +22,8 @@ object SassCompiler {
       getDependencies(outfile)
 
     } catch {
-      case e: SassCompilationException => {
-        throw new Exception("\nSass compiler: " + e.message +"\nFile: " + (e.file.orElse(Some(sassFile))).get.getCanonicalPath + "\nLine: " + e.line + " Col: " + Some(e.column).get)
-//        throw AssetCompilationException(e.file.orElse(Some(sassFile)), "Sass compiler: " + e.message, Some(e.line), Some(e.column))
-      }
+      case e: SassCompilationException =>
+        throw new Exception("\nSass compiler: " + e.message +"\nFile: " + e.file.orElse(Some(sassFile)).get.getCanonicalPath + "\nLine: " + e.line + " Col: " + Some(e.column).get)
     }
   }
 
@@ -41,7 +36,7 @@ object SassCompiler {
       (error: String) => ()
     )
 
-    def command = Seq("which", "sass") ! (capturer)
+    def command = Seq("which", "sass") ! capturer
     if(command == 0) out.toString()
     else throw new Exception("'sass' command not found. Try to add path to 'sass' to your $PATH system variable")
   }
@@ -68,7 +63,7 @@ object SassCompiler {
       (error: String) => err.append(error + "\n"))
 
     val process = command.run(capturer)
-    if (process.exitValue != 0) {
+    if (process.exitValue != 0 || err.nonEmpty) {
       throw new SassCompilationException(err.toString)
     }
   }
@@ -82,19 +77,17 @@ object SassCompiler {
     private def parseError(error: String): (Option[File], Int, Int, String) = {
       var line = 0
       var seen = 0
-      var column = 0
+      val column = 0
       var file: Option[File] = None
       var message = "Unknown error, try running sass directly"
-      for (errline: String <- augmentString(error).lines) {
-        errline match {
-          case LocationLine(l, f) => {
-            line = l.toInt;
-            file = Some(new File(f));
-          }
-          case other if (seen == 0) => {
-            message = other;
+      for (errLine: String <- augmentString(error).lines) {
+        errLine match {
+          case LocationLine(l, f) =>
+            line = l.toInt
+            file = Some(new File(f))
+          case other if seen == 0 =>
+            message = other
             seen += 1
-          }
           case other =>
         }
       }

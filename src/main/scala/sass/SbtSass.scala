@@ -37,11 +37,11 @@ object SbtSass extends AutoPlugin {
 
       val results = incremental.syncIncremental((streams in Assets).value.cacheDirectory / "run", sources) {
         modifiedSources: Seq[File] =>
-          if (modifiedSources.size > 0) 
+          if (modifiedSources.nonEmpty)
             streams.value.log.info(s"Sass compiling on ${modifiedSources.size} source(s)")
             
           val compilationResults = modifiedSources map { source => {
-            val sourceName = source.getPath.drop(sourceDir.getPath.size).reverse.dropWhile(_ != '.').reverse
+            val sourceName = source.getPath.drop(sourceDir.getPath.length).reverse.dropWhile(_ != '.').reverse
             def sourceWithExtn(extn: String): File = targetDir / (sourceName + extn)
             val targetFileCss = sourceWithExtn("css")
             val targetFileCssMap = sourceWithExtn("css.map")
@@ -55,12 +55,12 @@ object SbtSass extends AutoPlugin {
             val dependencies = SassCompiler.compile(source, targetFileCss, targetFileCssMin, sassOptions.value)
 
             // converting dependencies path from ../../../../file.sass to /normal/absolute/path/to/file.sass
-            val readFiles = (dependencies.map { (path)=>
+            val readFiles = dependencies.map { (path) =>
               val formattedPath = baseDirectory.value +
                 java.io.File.separator +
-                file(path.replaceAll("""(\.\.\/|\.\.\\)""","")).toPath().normalize().toString
+                file(path.replaceAll( """(\.\.\/|\.\.\\)""", "")).toPath.normalize().toString
               file(formattedPath)
-             }).toSet + source
+            }.toSet + source
             ((targetFileCss,
               targetFileCssMin,
               targetFileCssMap,
@@ -81,7 +81,7 @@ object SbtSass extends AutoPlugin {
           }
           (cachedForIncrementalCompilation, createdFiles)
       }
-      if(results._2.length > 0){
+      if(results._2.nonEmpty){
         streams.value.log.info(s"Sass compilation results: ${results._2.toSet.mkString(", ")}")
       }
 
