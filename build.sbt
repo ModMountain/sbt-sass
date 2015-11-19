@@ -1,5 +1,7 @@
 sbtPlugin := true
 
+organization := "com.modmountain"
+
 name := "sbt-sass"
 
 version := "0.2.0-SNAPSHOT"
