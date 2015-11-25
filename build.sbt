@@ -16,6 +16,7 @@ resolvers ++= Seq(
 addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.0.2")
 
 publishMavenStyle := true
+
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
   if (isSnapshot.value)
@@ -23,9 +24,16 @@ publishTo := {
   else
     Some("releases"  at nexus + "service/local/staging/deploy/maven2")
 }
+
 publishArtifact in Test := false
+
 pomIncludeRepository := { _ => false }
-pomExtra := <url>https://github.com/ModMountain/sbt-sass</url>
+
+licenses := Seq("MIT" -> url("http://opensource.org/licenses/MIT"))
+
+homepage := Some(url("https://github.com/ModMountain/sbt-sass"))
+
+pomExtra := (
   <scm>
     <url>git@github.com:ModMountain/sbt-sass.git</url>
     <connection>scm:git:git@github.com:ModMountain/sbt-sass.git</connection>
@@ -37,3 +45,4 @@ pomExtra := <url>https://github.com/ModMountain/sbt-sass</url>
       <url>http://www.jessesavary.com</url>
     </developer>
   </developers>
+  )
