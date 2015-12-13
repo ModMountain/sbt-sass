@@ -1,19 +1,20 @@
 sbtPlugin := true
 
-organization := "com.modmountain"
+organization := "com.modmountain.sbt"
 
 name := "sbt-sass"
 
-version := "0.2.0"
+version := "0.3.0"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.10.6"
 
 resolvers ++= Seq(
-  "Typesafe Releases Repository" at "http://repo.typesafe.com/typesafe/releases/",
-  Resolver.mavenLocal
+  Resolver.mavenLocal,
+  Resolver.typesafeIvyRepo("releases"),
+  Resolver.sonatypeRepo("releases")
 )
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.0.2")
+addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.2.2")
 
 publishMavenStyle := true
 
